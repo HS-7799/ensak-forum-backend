@@ -1,9 +1,12 @@
 package com.forum.ensak.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "specialities")
@@ -17,9 +20,11 @@ public class Speciality {
     @Size(min = 5,message = "Name should have at least 5 characters")
     private String name;
 
-//    @NotBlank(message = "Label is a required field")
-//    @Size(min = 5,message = "Label should have at least 5 characters")
     private String label;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "speciality")
+    private List<Student> students;
 
     public Speciality(String name,String label) {
         this.name = name;
@@ -50,5 +55,13 @@ public class Speciality {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class LevelController {
@@ -70,7 +69,8 @@ public class LevelController {
                 .map(level -> {
                     level.setName(newLevel.getName());
                     level.setLabel(newLevel.getLabel());
-                    return levelRepository.save(newLevel);
+                    level.setStudents(newLevel.getStudents());
+                    return levelRepository.save(level);
                 })
                 .orElseGet(() -> {
                     newLevel.setId(id);
@@ -81,13 +81,18 @@ public class LevelController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/levels/{id}")
-    public void destroy(@Valid @PathVariable Long id)
+    public ResponseEntity destroy(@Valid @PathVariable Long id)
     {
         Level level = levelRepository.getById(id);
         if(level != null)
         {
+            if(level.getStudents().size() != 0)
+                return ResponseEntity.badRequest().body(new MessageResponse("Some students have this level"));
             this.levelRepository.deleteById(id);
         }
+
+        return ResponseEntity.accepted().body(null);
+
     }
 
 

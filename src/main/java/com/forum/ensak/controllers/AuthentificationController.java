@@ -32,7 +32,6 @@ import com.forum.ensak.repository.UserRepository;
 import com.forum.ensak.security.jwt.JwtUtils;
 import com.forum.ensak.security.services.UserDetailsImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthentificationController {
@@ -147,7 +146,7 @@ public class AuthentificationController {
 
 		user.setRoles(roles);
 		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(user.getId());
 	}
 }
 

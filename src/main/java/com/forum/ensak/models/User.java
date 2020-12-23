@@ -3,6 +3,7 @@ package com.forum.ensak.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.tomcat.jni.Library;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +49,10 @@ public class User {
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
+
+	@OneToOne(mappedBy = "user")
+	private Student student;
+
 
 	public User() {
 	}
@@ -113,5 +118,17 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public Long getStudent() {
+		if(student != null)
+		{
+			return student.getId();
+		}
+		return null;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 }

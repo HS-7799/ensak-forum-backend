@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class SpecialityController {
@@ -68,7 +67,8 @@ public class SpecialityController {
                 .map(speciality -> {
                     speciality.setName(newSpeciality.getName());
                     speciality.setLabel(newSpeciality.getLabel());
-                    return specialityRepository.save(newSpeciality);
+                    speciality.setStudents(newSpeciality.getStudents());
+                    return specialityRepository.save(speciality);
                 })
                 .orElseGet(() -> {
                     newSpeciality.setId(id);
@@ -79,13 +79,17 @@ public class SpecialityController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/specialities/{id}")
-    public void destroy(@Valid @PathVariable Long id)
+    public ResponseEntity destroy(@Valid @PathVariable Long id)
     {
         Speciality speciality = specialityRepository.getById(id);
         if(speciality != null)
         {
+            if(speciality.getStudents().size() != 0)
+                return ResponseEntity.badRequest().body(new MessageResponse("Some students have this speciality"));
             this.specialityRepository.deleteById(id);
         }
+
+        return ResponseEntity.ok(null);
     }
 
 }

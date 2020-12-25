@@ -18,12 +18,12 @@ public class Student {
     private User user;
 
     @NotNull(message = "Level is required")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="level_id",nullable = false)
     private Level level;
 
     @NotNull(message = "Speciality is required")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="speciality_id",nullable = false)
     private Speciality speciality;
 

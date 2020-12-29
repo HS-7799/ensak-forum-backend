@@ -34,6 +34,7 @@ public class StudentController {
     @Autowired
     private UserRepository userRepository;
 
+
     @GetMapping("/students")
     public List<Student> index()
     {
@@ -101,7 +102,7 @@ public class StudentController {
         Student student = studentRepository.getById(id);
         if(student != null)
         {
-            this.levelRepository.deleteById(id);
+            this.studentRepository.deleteById(id);
         }
     }
 }

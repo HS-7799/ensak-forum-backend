@@ -53,6 +53,8 @@ public class User {
 	@OneToOne(mappedBy = "user")
 	private Student student;
 
+	@OneToOne(mappedBy = "user")
+	private Company company;
 
 	public User() {
 	}
@@ -130,5 +132,17 @@ public class User {
 
 	public void setStudent(Student student) {
 		this.student = student;
+	}
+
+	public Long getCompany() {
+		if(company != null)
+		{
+			return company.getId();
+		}
+		return null;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 }

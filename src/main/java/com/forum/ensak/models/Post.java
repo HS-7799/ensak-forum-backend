@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +22,7 @@ public class Post {
     private String title;
 
     @NotBlank(message = "Body is required")
+    @Size(max = 1300,message = "Body must be less than 1300 character")
     private String body;
 
     @NotBlank(message = "Location is required")

@@ -94,6 +94,20 @@ public class CompanyController {
             this.companyRepository.deleteById(id);
         }
     }
+
+
+    @GetMapping("/companies/{id}/posts")
+    public List<Post> companyPosts(@PathVariable Long id)
+    {
+
+        Company company = companyRepository.getById(id);
+        if(company != null)
+        {
+            return company.getPosts();
+        }
+
+        return null;
+    }
 }
 
 

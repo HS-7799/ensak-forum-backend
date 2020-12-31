@@ -1,7 +1,10 @@
 package com.forum.ensak.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "Companies")
@@ -20,6 +23,10 @@ public class Company {
     @ManyToOne
     @JoinColumn(name="ActivityArea_id",nullable = false)
     private ActivityArea activityarea;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
+    private List<Post> posts;
 
     private String address;
     private String description;
@@ -82,5 +89,13 @@ public class Company {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

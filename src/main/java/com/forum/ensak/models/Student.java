@@ -1,8 +1,12 @@
 package com.forum.ensak.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -16,6 +20,12 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "students")
+    private Set<Post> posts = new HashSet<>();
 
     @NotNull(message = "Level is required")
     @ManyToOne
@@ -87,4 +97,13 @@ public class Student {
     public void setCv(String cv) {
         this.cv = cv;
     }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
 }

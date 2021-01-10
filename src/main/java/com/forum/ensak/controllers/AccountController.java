@@ -5,18 +5,26 @@ import com.forum.ensak.models.User;
 import com.forum.ensak.repository.UserRepository;
 import com.forum.ensak.request.UpdatePasswordRequest;
 import com.forum.ensak.request.UpdateRequest;
+import com.forum.ensak.response.JwtResponse;
 import com.forum.ensak.response.MessageResponse;
 import com.forum.ensak.security.jwt.JwtUtils;
+import com.forum.ensak.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -28,6 +36,10 @@ public class AccountController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
 
     @Autowired
     PasswordEncoder encoder;
@@ -75,6 +87,7 @@ public class AccountController {
                     user.setEmail(updateRequest.getEmail());
                     return userRepository.save(user);
                 });
+
 
         return ResponseEntity.ok(new MessageResponse("Informationss are updated"));
 

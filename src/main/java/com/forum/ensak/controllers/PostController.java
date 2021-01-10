@@ -4,6 +4,8 @@ import com.forum.ensak.models.*;
 import com.forum.ensak.repository.CompanyRepository;
 import com.forum.ensak.repository.PostRepository;
 import com.forum.ensak.repository.StudentRepository;
+import com.forum.ensak.repository.UserRepository;
+import com.forum.ensak.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,13 @@ public class PostController {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
 
     @GetMapping("/posts")
     public List<Post> index()
@@ -56,8 +65,16 @@ public class PostController {
 
     @PreAuthorize("hasRole('ENTREPRISE') OR hasRole('ADMIN')")
     @PutMapping("/posts/{id}")
-    public ResponseEntity update(@Valid @RequestBody Post post,@PathVariable Long id)
+    public ResponseEntity update(@Valid @RequestBody Post post,@PathVariable Long id, @RequestHeader(name="Authorization") String tokenHeader)
     {
+        final String token = tokenHeader.split(" ")[1];
+        final String username = jwtUtils.getUserNameFromJwtToken(token);
+        final ERole roleName = userRepository.getByUsername(username).getRoles().stream().findFirst().get().getName();
+        if( roleName == ERole.ROLE_ENTREPRISE && userRepository.getByUsername(username).getCompany() != postRepository.getById(id).getCompany().getId())
+        {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         Post p = postRepository.findById(id)
                 .map(post1 -> {
                     post1.setTitle(post.getTitle());
@@ -74,11 +91,15 @@ public class PostController {
 
     @PreAuthorize("hasRole('ENTREPRISE') OR hasRole('ADMIN')")
     @DeleteMapping("/posts/{id}")
-    public void destroy(@PathVariable Long id)
+    public void destroy(@PathVariable Long id, @RequestHeader(name="Authorization") String tokenHeader)
     {
+        final String token = tokenHeader.split(" ")[1];
+        final String username = jwtUtils.getUserNameFromJwtToken(token);
         Post post = postRepository.getById(id);
-        if(post != null) {
 
+        final ERole roleName = userRepository.getByUsername(username).getRoles().stream().findFirst().get().getName();
+        if( roleName == ERole.ROLE_ENTREPRISE && userRepository.getByUsername(username).getCompany() == post.getCompany().getId())
+        {
             postRepository.deleteById(id);
         }
     }

@@ -38,15 +38,16 @@ public class Student {
     private Speciality speciality;
 
     private String description;
-    private String cv;
 
-    public Student(Long id, User user, Level level, Speciality speciality, String description, String cv) {
+    private String fileDownloadUri;
+
+    public Student(Long id, User user, Level level, Speciality speciality, String description, String fileDownloadUri) {
         this.id = id;
         this.user = user;
         this.level = level;
         this.speciality = speciality;
         this.description = description;
-        this.cv = cv;
+        this.fileDownloadUri = fileDownloadUri;
     }
 
     public Student() {}
@@ -90,13 +91,14 @@ public class Student {
         this.description = description;
     }
 
-    public String getCv() {
-        return cv;
+    public String getFileDownloadUri() {
+        return fileDownloadUri;
     }
 
-    public void setCv(String cv) {
-        this.cv = cv;
+    public void setFileDownloadUri(String fileDownloadUri) {
+        this.fileDownloadUri = fileDownloadUri;
     }
+
 
     public Set<Post> getPosts() {
         return posts;

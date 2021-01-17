@@ -1,14 +1,9 @@
 package com.forum.ensak.controllers;
 
 
-import com.forum.ensak.models.Level;
-import com.forum.ensak.models.Speciality;
-import com.forum.ensak.models.Student;
-import com.forum.ensak.models.User;
-import com.forum.ensak.repository.LevelRepository;
-import com.forum.ensak.repository.SpecialityRepository;
-import com.forum.ensak.repository.StudentRepository;
-import com.forum.ensak.repository.UserRepository;
+import com.forum.ensak.models.*;
+import com.forum.ensak.repository.*;
+import com.forum.ensak.services.DBFileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +28,14 @@ public class StudentController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DBFileRepository dbfileRepository;
+
+    private FileController filecontroller;
+
+    @Autowired
+    private DBFileStorageService dbFileStorageService;
 
 
     @GetMapping("/students")
@@ -59,16 +62,23 @@ public class StudentController {
         Speciality speciality = specialityRepository.getById(student.getSpeciality().getId());
         User user = userRepository.getById(student.getUser().getId());
 
+        /**MultipartFile cv = student.getCv();
+         UploadFileResponse response =filecontroller.uploadFile(cv);
+
+         DBFile dbFile = dbFileStorageService.getFile(response.getId());**/
+
+
         Student newStudent = new Student();
         newStudent.setUser(user);
         newStudent.setLevel(level);
         newStudent.setSpeciality(speciality);
         newStudent.setDescription(student.getDescription());
-        newStudent.setCv(student.getCv());
+        newStudent.setFileDownloadUri(student.getFileDownloadUri());
+        //newStudent.setCv(cv);
 
         studentRepository.save(newStudent);
 
-        return ResponseEntity.accepted().body(newStudent);
+        return ResponseEntity.ok(newStudent.getId());
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('ETUDIANT')")
@@ -80,6 +90,7 @@ public class StudentController {
         Speciality speciality = specialityRepository.getById(student.getSpeciality().getId());
         User user = userRepository.getById(student.getUser().getId());
 
+
         Student newStudent = studentRepository.getById(id);
         if(newStudent == null)
         {
@@ -87,7 +98,7 @@ public class StudentController {
         }
         newStudent.setLevel(level);
         newStudent.setSpeciality(speciality);
-        newStudent.setCv(student.getCv());
+        //newStudent.setCv(student.getCv());
         newStudent.setDescription(student.getDescription());
         newStudent = studentRepository.save(newStudent);
 
@@ -100,10 +111,15 @@ public class StudentController {
     public void destroy(@Valid @PathVariable Long id)
     {
         Student student = studentRepository.getById(id);
+
+        DBFile dbfile=dbfileRepository.getByFileDownloadUri(student.getFileDownloadUri());
+
         if(student != null)
         {
             this.studentRepository.deleteById(id);
+            dbfileRepository.deleteById(dbfile.getId());
         }
+
     }
 }
 

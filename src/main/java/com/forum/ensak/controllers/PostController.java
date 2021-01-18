@@ -104,41 +104,53 @@ public class PostController {
         }
     }
 
+//    function method return boolean value => check if the authenticated user student id is equal to id
+    public  boolean function(Long id,String token)
+    {
+        final String username = jwtUtils.getUserNameFromJwtToken(token);
+        return userRepository.getByUsername(username).getStudent() == id;
+    }
+
     @PreAuthorize("hasRole('ETUDIANT')")
     @PostMapping("/posts/{postId}/{studentId}")
-    public void applyForPost(@PathVariable Long postId,@PathVariable Long studentId)
+    public void applyForPost(@PathVariable Long postId,@PathVariable Long studentId, @RequestHeader(name="Authorization") String tokenHeader)
     {
-        Set<Student> students  = new HashSet<>();
-        Post post = postRepository.getById(postId);
-        
-        if(post != null)
+        if(this.function(studentId,tokenHeader.split(" ")[1]))
         {
-            Student student = studentRepository.getById(studentId);
-            if(student != null)
+            Post post = postRepository.getById(postId);
+
+            if(post != null)
             {
-                students.add(student);
-                post.setStudents(students);
-                postRepository.save(post);
+                Student student = studentRepository.getById(studentId);
+                if(student != null)
+                {
+                    Set<Student> students = post.getStudents();
+                    students.add(student);
+                    post.setStudents(students);
+                    postRepository.save(post);
+                }
             }
         }
     }
 
     @PreAuthorize("hasRole('ETUDIANT')")
     @DeleteMapping("/posts/{postId}/{studentId}")
-    public void quit(@PathVariable Long postId,@PathVariable Long studentId)
+    public void quit(@PathVariable Long postId,@PathVariable Long studentId,@RequestHeader(name="Authorization") String tokenHeader)
     {
-        Post post = postRepository.getById(postId);
-
-        if(post != null)
+        if (this.function(studentId,tokenHeader.split(" ")[1]))
         {
-            Student student = studentRepository.getById(studentId);
-            Set<Student> students  = post.getStudents();
-
-            if(student != null && students.size() != 0)
+            Post post = postRepository.getById(postId);
+            if(post != null)
             {
-                students.remove(student);
-                post.setStudents(students);
-                postRepository.save(post);
+                Student student = studentRepository.getById(studentId);
+                Set<Student> students  = post.getStudents();
+
+                if(student != null && students.size() != 0)
+                {
+                    students.remove(student);
+                    post.setStudents(students);
+                    postRepository.save(post);
+                }
             }
         }
 

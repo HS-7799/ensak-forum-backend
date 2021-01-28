@@ -98,7 +98,7 @@ public class PostController {
         Post post = postRepository.getById(id);
 
         final ERole roleName = userRepository.getByUsername(username).getRoles().stream().findFirst().get().getName();
-        if( roleName == ERole.ROLE_ENTREPRISE && userRepository.getByUsername(username).getCompany() == post.getCompany().getId())
+        if( (roleName == ERole.ROLE_ENTREPRISE && userRepository.getByUsername(username).getCompany() == post.getCompany().getId()) || roleName == ERole.ROLE_ADMIN )
         {
             postRepository.deleteById(id);
         }

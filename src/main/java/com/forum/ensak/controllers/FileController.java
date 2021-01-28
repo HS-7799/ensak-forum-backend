@@ -2,6 +2,7 @@ package com.forum.ensak.controllers;
 
 import com.forum.ensak.models.DBFile;
 import com.forum.ensak.repository.DBFileRepository;
+import com.forum.ensak.response.MessageResponse;
 import com.forum.ensak.services.DBFileStorageService;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
@@ -24,9 +25,16 @@ public class FileController {
     @Autowired
     private DBFileStorageService dbFileStorageService;
     @PostMapping("/uploadFile")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        DBFile dbFile = dbFileStorageService.storeFile(file);
-        return ResponseEntity.ok(dbFile.getFileDownloadUri());
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        if(file != null)
+        {
+            DBFile dbFile = dbFileStorageService.storeFile(file);
+            return ResponseEntity.ok(dbFile.getFileDownloadUri());
+        } else {
+            String errors = "Resume is required";
+            return ResponseEntity.badRequest().body(new MessageResponse(errors));
+        }
+
     }
 
 

@@ -3,6 +3,7 @@ package com.forum.ensak.controllers;
 
 import com.forum.ensak.models.*;
 import com.forum.ensak.repository.*;
+import com.forum.ensak.security.jwt.JwtUtils;
 import com.forum.ensak.services.DBFileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +30,9 @@ public class StudentController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Autowired
     private DBFileRepository dbfileRepository;
@@ -120,6 +125,27 @@ public class StudentController {
             dbfileRepository.deleteById(dbfile.getId());
         }
 
+    }
+
+
+    @PreAuthorize("hasRole('ETUDIANT')")
+    @GetMapping("/students/{id}/posts")
+    public Set<Post> studentJobs(@PathVariable Long id, @RequestHeader(name="Authorization") String tokenHeader)
+    {
+        final String token = tokenHeader.split(" ")[1];
+        final String username = jwtUtils.getUserNameFromJwtToken(token);
+
+        Student student = studentRepository.getById(id);
+        if(student != null && userRepository.getByUsername(username).getStudent() == id)
+        {
+            Set<Post> jobs =  student.getPosts();
+            for(Post job : jobs)
+            {
+                job.setStudents(null);
+            }
+            return jobs;
+        }
+        return null;
     }
 }
 

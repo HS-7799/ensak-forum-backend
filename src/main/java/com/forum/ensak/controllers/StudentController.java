@@ -67,12 +67,6 @@ public class StudentController {
         Speciality speciality = specialityRepository.getById(student.getSpeciality().getId());
         User user = userRepository.getById(student.getUser().getId());
 
-        /**MultipartFile cv = student.getCv();
-         UploadFileResponse response =filecontroller.uploadFile(cv);
-
-         DBFile dbFile = dbFileStorageService.getFile(response.getId());**/
-
-
         Student newStudent = new Student();
         newStudent.setUser(user);
         newStudent.setLevel(level);
@@ -122,7 +116,8 @@ public class StudentController {
         if(student != null)
         {
             this.studentRepository.deleteById(id);
-            dbfileRepository.deleteById(dbfile.getId());
+            if(dbfile != null)
+                dbfileRepository.deleteById(dbfile.getId());
         }
 
     }

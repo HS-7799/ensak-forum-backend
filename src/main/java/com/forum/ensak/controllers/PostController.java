@@ -131,6 +131,10 @@ public class PostController {
                 }
             }
         }
+        else
+        {
+            System.out.println("Unauthorized action");
+        }
     }
 
     @PreAuthorize("hasRole('ETUDIANT')")
@@ -152,6 +156,10 @@ public class PostController {
                     postRepository.save(post);
                 }
             }
+        }
+        else
+        {
+            System.out.println("Unauthorized action");
         }
 
     }

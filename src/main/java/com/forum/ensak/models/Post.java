@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ public class Post {
     private String title;
 
     @NotBlank(message = "Body is required")
-    @Size(max = 1300,message = "Body must be less than 1300 character")
+    @Size(max = 1500,message = "Body must be less than 1500 character")
     private String body;
 
     @NotBlank(message = "Location is required")
@@ -45,6 +46,10 @@ public class Post {
     @ManyToOne
     @JoinColumn(name="company_id",nullable = false)
     private Company company;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<Message> messages;
 
     public Post(@NotBlank(message = "Title is required") String title, @NotBlank(message = "Body is required") String body, @NotBlank(message = "Location is required") String location,Company company) {
         this.title = title;
@@ -119,5 +124,11 @@ public class Post {
         this.students = students;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
 
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
 }

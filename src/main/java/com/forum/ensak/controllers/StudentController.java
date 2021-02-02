@@ -142,6 +142,22 @@ public class StudentController {
         }
         return null;
     }
+
+
+    @PreAuthorize("hasRole('ETUDIANT')")
+    @GetMapping("/students/{id}/messages")
+    public List<Message> studentMessages(@PathVariable Long id, @RequestHeader(name="Authorization") String tokenHeader)
+    {
+        final String token = tokenHeader.split(" ")[1];
+        final String username = jwtUtils.getUserNameFromJwtToken(token);
+
+        Student student = studentRepository.getById(id);
+        if(student != null && userRepository.getByUsername(username).getStudent() == id)
+        {
+            return student.getMessages();
+        }
+        return null;
+    }
 }
 
 

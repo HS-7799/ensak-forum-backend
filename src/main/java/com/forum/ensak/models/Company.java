@@ -28,6 +28,10 @@ public class Company {
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
     private List<Post> posts;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
+    private List<Message> messages;
+
     private String address;
     private String description;
     private String logo;
@@ -97,5 +101,13 @@ public class Company {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -26,6 +27,10 @@ public class Student {
             cascade = CascadeType.ALL,
             mappedBy = "students")
     private Set<Post> posts = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
+    private List<Message> messages;
 
     @NotNull(message = "Level is required")
     @ManyToOne
@@ -108,4 +113,11 @@ public class Student {
         this.posts = posts;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
 }

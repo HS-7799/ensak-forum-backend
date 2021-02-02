@@ -2,6 +2,7 @@ package com.forum.ensak.controllers;
 
 import com.forum.ensak.models.*;
 import com.forum.ensak.repository.*;
+import com.forum.ensak.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,9 @@ public class CompanyController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('ENTREPRISE') or hasRole('ETUDIANT')")
     @GetMapping("/companies")
@@ -106,6 +110,21 @@ public class CompanyController {
             return company.getPosts();
         }
 
+        return null;
+    }
+
+    @PreAuthorize("hasRole('ENTREPRISE')")
+    @GetMapping("/companies/{id}/messages")
+    public List<Message> companyMessages(@PathVariable Long id, @RequestHeader(name="Authorization") String tokenHeader)
+    {
+        final String token = tokenHeader.split(" ")[1];
+        final String username = jwtUtils.getUserNameFromJwtToken(token);
+
+        Company company = companyRepository.getById(id);
+        if(company != null && userRepository.getByUsername(username).getCompany() == id)
+        {
+            return company.getMessages();
+        }
         return null;
     }
 }

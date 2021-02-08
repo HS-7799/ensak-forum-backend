@@ -3,6 +3,7 @@ package com.forum.ensak.controllers;
 
 import com.forum.ensak.models.*;
 import com.forum.ensak.repository.*;
+import com.forum.ensak.request.FileDownloadUri;
 import com.forum.ensak.security.jwt.JwtUtils;
 import com.forum.ensak.services.DBFileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +98,6 @@ public class StudentController {
         }
         newStudent.setLevel(level);
         newStudent.setSpeciality(speciality);
-        //newStudent.setCv(student.getCv());
         newStudent.setDescription(student.getDescription());
         newStudent = studentRepository.save(newStudent);
 
@@ -157,6 +157,25 @@ public class StudentController {
             return student.getMessages();
         }
         return null;
+    }
+
+    @PreAuthorize("hasRole('ETUDIANT')")
+    @PostMapping("/students/resume/{id}")
+    public ResponseEntity<Student> updatecv(@Valid @RequestBody FileDownloadUri fileDownloadUri, @Valid @PathVariable Long id)
+    {
+        Student student = studentRepository.getById(id);
+
+        DBFile dbfile=dbfileRepository.getByFileDownloadUri(student.getFileDownloadUri());
+        if (dbfile != null){dbfileRepository.deleteById(dbfile.getId());}
+        if(student == null)
+        {
+            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
+        }
+
+        student.setFileDownloadUri(fileDownloadUri.getFileDownloadUri());
+        student = studentRepository.save(student);
+        return new ResponseEntity<Student>(student,HttpStatus.OK);
+
     }
 }
 

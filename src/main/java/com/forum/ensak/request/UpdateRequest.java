@@ -6,10 +6,6 @@ import javax.validation.constraints.Size;
 
 public class UpdateRequest {
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 20)
-    private String username;
-
     @NotBlank(message = "Name is required")
     @Size(min = 6, max = 20)
     private String name;
@@ -21,18 +17,10 @@ public class UpdateRequest {
 
     public UpdateRequest(){}
 
-    public UpdateRequest(@NotBlank @Size(min = 3, max = 20) String username, @NotBlank @Size(min = 6, max = 20) String name, @NotBlank @Size(max = 50) @Email String email) {
-        this.username = username;
+    public UpdateRequest(@NotBlank @Size(min = 6, max = 20) String name, @NotBlank @Size(max = 50) @Email String email) {
+
         this.name = name;
         this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {

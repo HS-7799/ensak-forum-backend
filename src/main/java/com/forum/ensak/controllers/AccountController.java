@@ -54,19 +54,13 @@ public class AccountController {
     }
 
     @PutMapping("/profile/update/{id}")
-//    @PreAuthorize("hasRole('ETUDIANT') or hasRole('ENTREPRISE') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ETUDIANT') or hasRole('ENTREPRISE') or hasRole('ADMIN')")
     public ResponseEntity updateUser(@Valid @RequestBody UpdateRequest updateRequest, @PathVariable Long id)
     {
         String error = "";
         User currentuser = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with id: " + id));
-        if (!currentuser.getUsername().equals(updateRequest.getUsername()))
-        {
-            if(userRepository.existsByUsername(updateRequest.getUsername()))
-            {
-                error += "This username is already used,";
-            }
-        }
+
 
         if (!currentuser.getEmail().equals(updateRequest.getEmail()))
         {
@@ -83,11 +77,9 @@ public class AccountController {
         Optional<Object> s = userRepository.findById(id)
                 .map(user -> {
                     user.setName(updateRequest.getName());
-                    user.setUsername(updateRequest.getUsername());
                     user.setEmail(updateRequest.getEmail());
                     return userRepository.save(user);
                 });
-
 
         return ResponseEntity.ok(new MessageResponse("Informationss are updated"));
 

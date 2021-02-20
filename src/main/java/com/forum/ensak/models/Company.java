@@ -3,7 +3,9 @@ package com.forum.ensak.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -32,7 +34,9 @@ public class Company {
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
     private List<Message> messages;
 
+    @Size(max = 200,message = "Description must be less than 200 character")
     private String address;
+    @Size(max = 1500,message = "Description must be less than 1500 character")
     private String description;
     private String logo;
 

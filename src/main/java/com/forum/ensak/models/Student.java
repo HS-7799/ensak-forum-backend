@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ public class Student {
     @JoinColumn(name="speciality_id",nullable = false)
     private Speciality speciality;
 
+    @Size(max = 1500,message = "Description must be less than 1500 character")
     private String description;
 
     private String fileDownloadUri;

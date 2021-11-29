@@ -25,4 +25,4 @@ mvn spring-boot:run
 
 now your local developpement server is running on 8080
 
-you need to insert a user manuallay to be the administration or you can send a request to : /api/auth/signup
+you need to insert a user manuallay to be the administrator or you can send a  POST request to : /api/auth/signup

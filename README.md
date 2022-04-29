@@ -19,8 +19,14 @@ INSERT INTO roles(name) VALUES('ROLE_ENTREPRISE');
 
 run the following:
 ```
-mvn install
 mvn spring-boot:run
+```
+
+## packaging
+
+run the following:
+```
+mvn install
 ```
 
 now your local developpement server is running on 8080

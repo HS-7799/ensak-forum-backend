@@ -31,4 +31,4 @@ mvn install
 
 now your local developpement server is running on 8080
 
-you need to insert a user manuallay to be the administrator or you can send a  POST request to : /api/auth/signup
+you need to insert a user manuallay to be the administrator or you can send a  POST request to : /api/auth/signup and add a row in user_roles so that you give a role to the created user
